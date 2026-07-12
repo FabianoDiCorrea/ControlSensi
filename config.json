@@ -1,0 +1,9 @@
+{
+    "recoil_value": 1.0,
+    "always_on_top": false,
+    "hotkey_up": "page up",
+    "hotkey_down": "page down",
+    "voice_enabled": true,
+    "volume": 0.03125,
+    "tts_device": "FxSound Speakers (FxSound Audio Enhancer)"
+}
