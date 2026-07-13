@@ -42,7 +42,7 @@ def get_proportional_size(img, max_dim=60):
 def load_grip_image(grip_name, max_dim=60):
     mapping = {
         "Meio Punho": "meio_punho.png",
-        "Punho Horizontal": "punho_angular.png", 
+        "Empunhadura Inclinada": "empunhadura inclinada.png", 
         "Punho de Polegar": "punho_polegar.png",
         "Punho Leve": "punho_leve.png",
         "Punho Vertical": "punho_vertical.png"
@@ -50,6 +50,19 @@ def load_grip_image(grip_name, max_dim=60):
     filename = mapping.get(grip_name)
     if filename:
         path = os.path.join(ICON_DIR, filename)
+        if os.path.exists(path):
+            try:
+                img = Image.open(path)
+                img = crop_transparent(img)
+                size = get_proportional_size(img, max_dim)
+                return ctk.CTkImage(light_image=img, dark_image=img, size=size)
+            except Exception:
+                pass
+    return None
+
+def load_attachment_icon(icon_name, max_dim=50):
+    for ext in ['.png', '.webp', '.jpg']:
+        path = os.path.join(ICON_DIR, f"{icon_name}{ext}")
         if os.path.exists(path):
             try:
                 img = Image.open(path)
@@ -145,25 +158,28 @@ def tts_worker(q, get_vol_func, get_enabled_func, get_device_func):
 WEAPONS_DATA = [
     {"category": "MAIS USADAS", "color": "#F2A900", "items": [
         {"name": "BERRYL", "normal": "1.10", "boca1": "0.95", "boca2": "1.30", "comp1": "0.90", "comp2": "1.20", "grip": "Meio Punho"},
-        {"name": "AUG",    "normal": "1.25", "boca1": "0.90", "boca2": "1.15", "comp1": "0.80", "comp2": "0.95", "grip": "Punho Horizontal"},
+        {"name": "AUG",    "normal": "1.25", "boca1": "0.90", "boca2": "1.15", "comp1": "0.80", "comp2": "0.95", "grip": "Empunhadura Inclinada"},
         {"name": "AKM",    "normal": "0.90", "boca1": "0.80", "boca2": "1.05", "comp1": "0.75", "comp2": "0.95", "grip": "Não usa"},
         {"name": "ACE",    "normal": "1.15", "boca1": "0.80", "boca2": "0.95", "comp1": "0.70", "comp2": "0.85", "grip": "Meio Punho"},
-        {"name": "K2",     "normal": "0.85", "boca1": "0.70", "boca2": "0.95", "comp1": "0.65", "comp2": "0.90", "grip": "Punho Horizontal"},
+        {"name": "K2",     "normal": "0.85", "boca1": "0.70", "boca2": "0.95", "comp1": "0.65", "comp2": "0.90", "grip": "Empunhadura Inclinada"},
         {"name": "M4",     "normal": "0.85", "boca1": "0.55", "boca2": "0.70", "comp1": "0.55", "comp2": "0.70", "grip": "Meio Punho"},
     ]},
     {"category": "OUTRAS", "color": "#42A5F5", "items": [
-        {"name": "SCARL",  "normal": "0.90", "boca1": "0.65", "boca2": "0.85", "comp1": "0.65", "comp2": "0.85", "grip": "Punho Horizontal"},
-        {"name": "QBZ",    "normal": "1.00", "boca1": "0.65", "boca2": "0.90", "comp1": "0.60", "comp2": "0.85", "grip": "Punho Horizontal"},
-        {"name": "G36C",   "normal": "1.00", "boca1": "0.70", "boca2": "0.90", "comp1": "0.65", "comp2": "0.90", "grip": "Punho Horizontal"},
+        {"name": "SCARL",  "normal": "0.90", "boca1": "0.65", "boca2": "0.85", "comp1": "0.65", "comp2": "0.85", "grip": "Empunhadura Inclinada"},
+        {"name": "QBZ",    "normal": "1.00", "boca1": "0.65", "boca2": "0.90", "comp1": "0.60", "comp2": "0.85", "grip": "Empunhadura Inclinada"},
+        {"name": "G36C",   "normal": "1.00", "boca1": "0.70", "boca2": "0.90", "comp1": "0.65", "comp2": "0.90", "grip": "Empunhadura Inclinada"},
         {"name": "VECTOR", "normal": "1.25", "boca1": "0.95", "boca2": "1.35", "comp1": "0.75", "comp2": "1.10", "grip": "Punho de Polegar"},
         {"name": "UMP",    "normal": "0.75", "boca1": "0.55", "boca2": "0.80", "comp1": "0.50", "comp2": "0.65", "grip": "Punho de Polegar"},
         {"name": "JS9",    "normal": "0.90", "boca1": "0.70", "boca2": "1.00", "comp1": "0.50", "comp2": "0.75", "grip": "Punho de Polegar"},
+        {"name": "MICRO UZI", "normal": "1.20", "boca1": "", "boca2": "", "comp1": "0.70", "comp2": "", "grip": "Não usa"},
+        {"name": "MP5",    "normal": "0.95", "boca1": "", "boca2": "", "comp1": "0.80", "comp2": "", "grip": "Punho de Polegar"},
+        {"name": "M249",   "normal": "0.50", "boca1": "", "boca2": "", "comp1": "", "comp2": "", "grip": "Não usa"},
         {"name": "MP9",    "normal": "0.50", "boca1": "DESLIGADO", "boca2": "", "comp1": "", "comp2": "", "grip": "Não usa"},
         {"name": "TOMMY",  "normal": "0.95", "boca1": "0.70 VERTICAL", "boca2": "", "comp1": "", "comp2": "", "grip": "Não usa"},
         {"name": "DMRs",   "normal": "1.25", "boca1": "1.55 MIRA AMP.", "boca2": "", "comp1": "", "comp2": "", "grip": "Punho Leve"},
     ]},
     {"category": "ARMAS DROP", "color": "#FF5252", "items": [
-        {"name": "FAMAS",  "normal": "1.00", "boca1": "0.80", "boca2": "1.15", "comp1": "0.75", "comp2": "0.95", "grip": "Punho Horizontal"},
+        {"name": "FAMAS",  "normal": "1.00", "boca1": "0.80", "boca2": "1.15", "comp1": "0.75", "comp2": "0.95", "grip": "Empunhadura Inclinada"},
         {"name": "GROZA",  "normal": "1X 0.85", "boca1": "2x 1.20", "boca2": "", "comp1": "", "comp2": "", "grip": "Não usa"},
         {"name": "MG3",    "normal": "PÉ 0.50", "boca1": "DEITA DESL.", "boca2": "", "comp1": "", "comp2": "", "grip": "Não usa"},
         {"name": "P90",    "normal": "0.50", "boca1": "DESLIGADO", "boca2": "", "comp1": "", "comp2": "", "grip": "Não usa"},
@@ -575,7 +591,7 @@ class ControlSensiApp(ctk.CTk):
                 lbl_match = ctk.CTkLabel(top_row, text=f"{match_info}", font=("Inter", 11, "bold"), text_color=self.c_accent)
                 lbl_match.pack(side="right")
                 
-                # Bottom content for Weapon Image and Grip
+                # Bottom content for Weapon Image and Attachments Slots
                 bot_row = ctk.CTkFrame(f, fg_color="transparent")
                 bot_row.pack(fill="x", padx=12, pady=(2, 10))
                 
@@ -583,17 +599,52 @@ class ControlSensiApp(ctk.CTk):
                 weapon_img = load_weapon_image(item["name"], max_dim=75)
                 if weapon_img:
                     lbl_img = ctk.CTkLabel(bot_row, text="", image=weapon_img)
-                    lbl_img.pack(side="left", padx=(0, 15))
+                    lbl_img.pack(side="left", padx=(0, 8))
+
+                slots_frame = ctk.CTkFrame(bot_row, fg_color="transparent")
+                slots_frame.pack(side="left", fill="y", padx=2)
+
+                def create_slot(parent, img):
+                    slot = ctk.CTkFrame(parent, fg_color="#1c1c1e", border_width=1, border_color="#333333", width=44, height=44, corner_radius=2)
+                    slot.grid_propagate(False)
+                    slot.pack_propagate(False)
+                    if img:
+                        lbl = ctk.CTkLabel(slot, text="", image=img)
+                        lbl.place(relx=0.5, rely=0.5, anchor="center")
+                    return slot
+
+                is_1x = "1X" in match_info or "NORMAL" in match_info
+                is_2x = "2X" in match_info
+                has_boca = "BOCA" in match_info
+                has_comp = "COMP" in match_info
+
+                muzzle_name = None
+                is_smg = item["name"] in ["UMP", "MICRO UZI", "UZI", "VECTOR", "MP5", "JS9", "JS5"]
                 
-                lbl_grip = None
+                if has_comp or has_boca:
+                    if is_smg:
+                        muzzle_name = "compensador_SMGs"
+                    else:
+                        if has_comp: muzzle_name = "compensador_ARs_DMRs"
+                        else: muzzle_name = "freio_boca"
+
+                scope_name = None
+                if is_2x: scope_name = "mira_2x"
+                elif is_1x: scope_name = "mira_optica1x"
+
+                # Row for slots (Muzzle, Grip, Scope)
+                if muzzle_name:
+                    m_img = load_attachment_icon(muzzle_name, max_dim=38)
+                    create_slot(slots_frame, m_img).pack(side="left", padx=2)
+                
                 grip_text = item["grip"]
                 if grip_text and grip_text != "Não usa":
-                    grip_img = load_grip_image(grip_text, max_dim=50)
-                    if grip_img:
-                        lbl_grip = ctk.CTkLabel(bot_row, text=" " + grip_text, image=grip_img, compound="left", font=("Inter", 13, "bold"), text_color=self.c_text)
-                    else:
-                        lbl_grip = ctk.CTkLabel(bot_row, text=f"• {grip_text}", font=("Inter", 13), text_color=self.c_text)
-                    lbl_grip.pack(side="left")
+                    g_img = load_grip_image(grip_text, max_dim=40)
+                    create_slot(slots_frame, g_img).pack(side="left", padx=2)
+                
+                if scope_name:
+                    s_img = load_attachment_icon(scope_name, max_dim=38)
+                    create_slot(slots_frame, s_img).pack(side="left", padx=2)
 
                 # Interactive Hover Effect
                 def on_enter(e, widget=f):
@@ -601,9 +652,12 @@ class ControlSensiApp(ctk.CTk):
                 def on_leave(e, widget=f):
                     widget.configure(fg_color=self.c_bg, border_color=self.c_border)
                     
-                elements = [f, top_row, bot_row, lbl_name_top, lbl_match]
+                elements = [f, top_row, bot_row, lbl_name_top, lbl_match, slots_frame]
                 if lbl_img: elements.append(lbl_img)
-                if lbl_grip: elements.append(lbl_grip)
+                for child in slots_frame.winfo_children():
+                    elements.append(child)
+                    if child.winfo_children():
+                        elements.append(child.winfo_children()[0])
                 
                 for el in elements:
                     el.bind("<Enter>", on_enter)
